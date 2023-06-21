@@ -1,6 +1,6 @@
 <template>
   <div class="square">
-    <h2>{{ pageTitle }}</h2>
+    <h1 class="title-header">{{ this.currentPage == 'first' ? "Configs Page" : "Events Page" }}</h1>
     <div v-if="currentPage === 'first'">
       <ConfigsPage />
     </div>
@@ -8,12 +8,11 @@
       <EventsPage :infos="eventsInfo" :image="eventsImage"/>
     </div>
     <div class="buttons-switch">
-      <button class="config-page-button" @click="setCurrentPage('first')">Configs Page</button>
-      <button @click="setCurrentPage('second')">Events Page</button>
+      <button class="config-page-button btn" :class="this.btnConfig" @click="setCurrentPage('first')">Configs</button>
+      <button class="btn" :class="this.btnEvent" @click="setCurrentPage('second')">Events</button>
     </div>
   </div>
 </template>
-
 
 <script>
 import ConfigsPage from './components/ConfigsPage.vue'
@@ -33,6 +32,9 @@ export default {
       currentPage: 'first',
       pageTitle: 'Configs',
 
+      btnConfig: "btn-configs",
+      btnEvent: "",
+
       eventsInfo: null,
       eventsImage: null,
     };
@@ -47,6 +49,13 @@ export default {
   methods: {
     setCurrentPage(page) {
       this.currentPage = page;
+      if (page == 'first') {
+        this.btnConfig = "btn-configs";
+        this.btnEvent = "";
+      }else {
+        this.btnEvent = "btn-events";
+        this.btnConfig = "";
+      }
     },
   }
 }
@@ -57,25 +66,49 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 40px;
   display: flex;
   justify-content: center;
-  align-items: center;
+}
+
+.title-header {
+  display: flex;
+  justify-content: center;
 }
 
 .buttons-switch {
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: 32px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+    margin-left: 4px;
+    margin-right: 4px;
 }
+
+.btn {
+  width: 100%;
+  height: 40px;
+  background: unset;
+  border: unset;
+}
+
+.btn-configs, .btn-events {
+  border-left: unset;
+  border-top: unset;
+  border-right: unset;
+  border-bottom: 2px black solid;
+}
+
 .square {
-  border: 2px black solid;
+  background-color: floralwhite;
+  border: 2px red solid;
+  border-radius: 8px;
   width: 30%;
+  padding-top: 12px;
 }
 
 .config-page-button {
-  margin-right: 16px;
 }
 
 </style>

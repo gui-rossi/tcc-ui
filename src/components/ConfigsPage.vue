@@ -1,23 +1,27 @@
 <template>
-    <div v-if="this.configs">
-      <h2>Time Window Picker</h2>
+    <div class="container" v-if="this.configs">
       <div>
-        <span>Start Time:</span>
-        <button @click="selectStartTime">{{ startTime }}</button>
-        <span>End Time:</span>
-        <button @click="selectEndTime">{{ endTime }}</button>
-      </div>
-      <div>
-        <input type="checkbox" id="detectTruck" v-model="detectTruck">
-        <label for="detectTruck">Detect Truck</label>
-      </div>
-      <div>
-        <input type="checkbox" id="detectPerson" v-model="detectPerson">
-        <label for="detectPerson">Detect Person</label>
-      </div>
-      <div>
-        <input type="checkbox" id="soundAlarm" v-model="soundAlarm">
-        <label for="soundAlarm">Sound Alarm on Person Detection</label>
+        <div class="row">
+          <div class="light-time">Active light time window:</div>
+          <div>
+            <span>Start Time:</span>
+            <button @click="selectStartTime">{{ startTime }}</button>
+            <span class="span-2">End Time:</span>
+            <button @click="selectEndTime">{{ endTime }}</button>
+          </div>
+        </div>
+        <div class="row">
+          <input type="checkbox" id="detectTruck" v-model="detectTruck">
+          <label for="detectTruck">Detect Truck</label>
+        </div>
+        <div class="row">
+          <input type="checkbox" id="detectPerson" v-model="detectPerson">
+          <label for="detectPerson">Detect Person</label>
+        </div>
+        <div class="row">
+          <input type="checkbox" id="soundAlarm" v-model="soundAlarm">
+          <label for="soundAlarm">Sound Alarm on Person Detection</label>
+        </div>
       </div>
       <button @click="saveConfig">Save</button>
     </div>
@@ -154,4 +158,23 @@
     }
   };
 </script>
+
+<style>
+.row {
+  margin-bottom: 8px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.span-2{
+  margin-left: 16px;
+}
+.light-time {
+  margin-bottom: 4px;
+}
+
+</style>
   
