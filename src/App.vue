@@ -15,11 +15,13 @@
 </template>
 
 <script>
+/* eslint-disable */
 import ConfigsPage from './components/ConfigsPage.vue'
 import EventsPage from './components/EventsPage.vue'
 import * as signalR from '@microsoft/signalr';
+import url from './backendUrl';
 
-let connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5001/ChatHub").build();
+let connection = new signalR.HubConnectionBuilder().withUrl(url.signalR).build();
 
 export default {
   name: 'App',
@@ -104,7 +106,7 @@ export default {
   background-color: floralwhite;
   border: 2px red solid;
   border-radius: 8px;
-  width: 30%;
+  width: 100%;
   padding-top: 12px;
 }
 
