@@ -42,11 +42,9 @@ export default {
     };
   },
   mounted: async function () {
-    // connection.on("ReceiveMessage", data => { console.log(data); });
+    connection.start();
     connection.on("ReceiveImage", data => { this.eventsImage = data });
     connection.on("ReceiveInfos", data => { this.eventsInfo = data });
-
-    // connection.start().then(() => connection.invoke("SendMessage", "Gui",  "Hello"));
   },
   methods: {
     setCurrentPage(page) {
