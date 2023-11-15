@@ -44,7 +44,7 @@ export default {
   mounted: async function () {
     connection.start();
     connection.on("ReceiveImage", data => { this.eventsImage = data });
-    connection.on("ReceiveInfos", data => { this.eventsInfo = data });
+    connection.on("ReceiveInfos", (param1, param2, param3) => { this.eventsInfo = {gps: param1, battery: param2, powerSource: param3} });
   },
   methods: {
     setCurrentPage(page) {

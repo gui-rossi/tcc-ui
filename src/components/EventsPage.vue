@@ -1,20 +1,28 @@
 <template>
   <div>
     <div>
-      <button @click="requestImage">Request Image</button>
-      <button @click="requestInfo">Request Infos</button>
-
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <button @click="requestImage">Request Image</button>
+        <button @click="requestInfo">Request Infos</button>
+      </div>
+      
       <div v-if="this.image">
         <img :src="image" alt="Requested Image" />
       </div>
 
       <div v-if="this.infos?.gps">
-        <p>GPS Coordinates: {{ this.infos.gps }}</p>
+        <p>GPS Coordinates: 
+          <br> {{ this.infos.gps.split('|')[0] }} 
+          <br> {{ this.infos.gps.split('|')[1] }} 
+        </p>
       </div>
 
       <div v-if="this.infos?.battery">
         <p>Battery: {{ this.infos.battery }}</p>
-        <p>Gps: {{ this.infos.gps }}</p>
+      </div>
+
+      <div v-if="this.infos?.powerSource">
+        <p>Power Source: {{ this.infos.powerSource }}</p>
       </div>
     </div>
     <ul v-if="eventLogHistory?.length">
@@ -36,6 +44,9 @@ export default {
       type: Array,
       required: false,
     },
+    image: {
+      type: String,
+    },
   },
   mounted: async function () {
     await this.loadData();
@@ -43,10 +54,12 @@ export default {
   data() {
     return {
       eventLogHistory: null,
-      image: null,
     };
   },
   methods: {
+    printImage () {
+      console.log(this.image)
+    },
     async loadData() {
       try {
         const data = await axios.get('/Event/GetHistory');
