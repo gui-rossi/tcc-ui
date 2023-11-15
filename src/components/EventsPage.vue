@@ -4,6 +4,7 @@
       <div style="display: flex; justify-content: center; align-items: center;">
         <button @click="requestImage">Request Image</button>
         <button @click="requestInfo">Request Infos</button>
+        <button id="show-modal" @click="showModal = true">Show Modal</button>
       </div>
       
       <div v-if="this.image">
@@ -12,8 +13,8 @@
 
       <div v-if="this.infos?.gps">
         <p>GPS Coordinates: 
-          <br> {{ this.infos.gps.split('|')[0] }} 
-          <br> {{ this.infos.gps.split('|')[1] }} 
+          <br> {{ this.infos.gps.split('|')[0] }}
+          <br> {{ this.infos.gps.split('|')[1] }}
         </p>
       </div>
 
@@ -32,67 +33,86 @@
       </li>
     </ul>
   </div>
+
+  <Teleport to="body">
+    <!-- use the modal component, pass in the prop -->
+    <modalComp :show="this.showModal" :myValue="'TESTE'" @close="showModal = false">
+      <template #header>
+        <h3>custom header</h3>
+      </template>
+    </modalComp>
+  </Teleport>
+
 </template>
   
 <script>
 /* eslint-disable */
 import axios from '../axios';
+import { ref } from 'vue'
+import ModalComp  from './ModalComp.vue'
 
 export default {
-  props: {
-    infos: {
-      type: Array,
-      required: false,
+    components: {
+      ModalComp,
     },
-    image: {
-      type: String,
+    props: {
+        infos: {
+            type: Array,
+            required: false,
+        },
+        image: {
+            type: String,
+        },
     },
-  },
-  mounted: async function () {
-    await this.loadData();
-  },
-  data() {
-    return {
-      eventLogHistory: null,
-    };
-  },
-  methods: {
-    printImage () {
-      console.log(this.image)
+    mounted: async function () {
+        await this.loadData();
     },
-    async loadData() {
-      try {
-        const data = await axios.get('/Event/GetHistory');
-        this.eventLogHistory = data;
-      } catch (error) {
-        console.error(error);
-      }
+    data() {
+        return {
+            eventLogHistory: null,
+            showModal: ref(false),
+        };
     },
-    async requestImage() {
-      try {
-        await axios.get('/Event/RequestImage');
-      } catch (error) {
-        console.error(error);
-      }
+    methods: {
+        printImage() {
+            console.log(this.image);
+        },
+        async loadData() {
+            try {
+                const data = await axios.get('/Event/GetHistory');
+                this.eventLogHistory = data;
+            }
+            catch (error) {
+                console.error(error);
+            }
+        },
+        async requestImage() {
+            try {
+                await axios.get('/Event/RequestImage');
+            }
+            catch (error) {
+                console.error(error);
+            }
+        },
+        async requestInfo() {
+            try {
+                await axios.get('/Event/RequestInfos');
+            }
+            catch (error) {
+                console.error(error);
+            }
+        },
+        getBase64(file) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                return reader.result;
+            };
+            reader.onerror = function (error) {
+                console.log('Error: ', error);
+            };
+        }
     },
-    async requestInfo() {
-      try {
-        await axios.get('/Event/RequestInfos');
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    getBase64(file) {
-      var reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = function () {
-        return reader.result;
-      };
-      reader.onerror = function (error) {
-        console.log('Error: ', error);
-      };
-    }
-  },
 };
 </script>
 
