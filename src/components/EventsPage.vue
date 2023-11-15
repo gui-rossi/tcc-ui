@@ -1,18 +1,18 @@
 <template>
-  <div>
+  <div style="display: flex; justify-content: center;">
     <div>
-      <div style="display: flex; justify-content: center; align-items: center;">
+      <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 8px;">
         <button @click="requestImage">Request Image</button>
-        <button @click="requestInfo">Request Infos</button>
+        <button style="margin-left: 8px" @click="requestInfo">Request Infos</button>
         <button id="show-modal" @click="showModal = true">Show Modal</button>
       </div>
-      
+
       <div v-if="this.image">
         <img :src="image" alt="Requested Image" />
       </div>
 
       <div v-if="this.infos?.gps">
-        <p>GPS Coordinates: 
+        <p>GPS Coordinates:
           <br> {{ this.infos.gps.split('|')[0] }}
           <br> {{ this.infos.gps.split('|')[1] }}
         </p>
@@ -28,8 +28,10 @@
     </div>
     <ul v-if="eventLogHistory?.length">
       <li v-for="eventLog in eventLogHistory" :key="eventLog.Id">
-        {{ "LogType: " + eventLog.LogType + "Status: " + eventLog.Status + "Value: " + eventLog.Value + "Date: " +
-          eventLog.TimeStamp }}
+        <strong>LogType: </strong> {{ eventLog.logType }}
+        <strong>Status: </strong> {{ this.systemStatus[eventLog.status] }}
+        <strong v-if="eventLog.value?.length">Value: </strong> {{ eventLog.value }}
+        <strong>Date: </strong> {{ eventLog.timeStamp }}
       </li>
     </ul>
   </div>
@@ -52,67 +54,67 @@ import { ref } from 'vue'
 import ModalComp  from './ModalComp.vue'
 
 export default {
-    components: {
+  components: {
       ModalComp,
     },
-    props: {
-        infos: {
-            type: Array,
-            required: false,
-        },
-        image: {
-            type: String,
-        },
+  props: {
+    infos: {
+      type: Array,
+      required: false,
     },
-    mounted: async function () {
-        await this.loadData();
+    image: {
+      type: String,
     },
-    data() {
-        return {
-            eventLogHistory: null,
-            showModal: ref(false),
-        };
+  },
+  mounted: async function () {
+    await this.loadData();
+  },
+  data() {
+    return {
+      eventLogHistory: null,
+      systemStatus: [
+        'Waiting',
+        'Executed',
+        'Completed',
+        'Error'
+      ],
+      showModal: ref(false),
+    };
+  },
+  methods: {
+    async loadData() {
+      try {
+        const data = await axios.get('/Event/GetHistory');
+        this.eventLogHistory = data.data.slice(0, 15);
+      } catch (error) {
+        console.error(error);
+      }
     },
-    methods: {
-        printImage() {
-            console.log(this.image);
-        },
-        async loadData() {
-            try {
-                const data = await axios.get('/Event/GetHistory');
-                this.eventLogHistory = data;
-            }
-            catch (error) {
-                console.error(error);
-            }
-        },
-        async requestImage() {
-            try {
-                await axios.get('/Event/RequestImage');
-            }
-            catch (error) {
-                console.error(error);
-            }
-        },
-        async requestInfo() {
-            try {
-                await axios.get('/Event/RequestInfos');
-            }
-            catch (error) {
-                console.error(error);
-            }
-        },
-        getBase64(file) {
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                return reader.result;
-            };
-            reader.onerror = function (error) {
-                console.log('Error: ', error);
-            };
-        }
+    async requestImage() {
+      try {
+        await axios.get('/Event/RequestImage');
+      } catch (error) {
+        console.error(error);
+      }
     },
+    async requestInfo() {
+      try {
+        await axios.get('/Event/RequestInfos');
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    getBase64(file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        return reader.result;
+      };
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+    }
+  },
 };
 </script>
 
