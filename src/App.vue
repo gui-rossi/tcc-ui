@@ -5,11 +5,11 @@
       <ConfigsPage />
     </div>
     <div v-else-if="currentPage === 'second'">
-      <EventsPage :infos="eventsInfo" :image="eventsImage"/>
+      <EventsPage ref="eventsPageRef" :infos="eventsInfo"/>
     </div>
     <div class="buttons-switch">
-      <button class="config-page-button btn" :class="this.btnConfig" @click="setCurrentPage('first')">Configs</button>
-      <button class="btn" :class="this.btnEvent" @click="setCurrentPage('second')">Events</button>
+      <button class="config-page-button btn" :class="this.btnConfig" @click="setCurrentPage('first')"><h3>Configs</h3></button>
+      <button class="btn" :class="this.btnEvent" @click="setCurrentPage('second')"><h3>Events</h3></button>
     </div>
   </div>
 </template>
@@ -39,12 +39,20 @@ export default {
 
       eventsInfo: null,
       eventsImage: null,
+      msg: null,
+      showModal: false
     };
   },
   mounted: async function () {
     connection.start();
-    connection.on("ReceiveImage", data => { this.eventsImage = data });
-    connection.on("ReceiveInfos", (param1, param2, param3) => { this.eventsInfo = {gps: param1, battery: param2, powerSource: param3} });
+    connection.on("NotifyFullMemory", msg => { this.$refs.eventsPageRef.openModal("fullMemory", null); });
+    connection.on("NotifyCameraObstruction", msg => { this.$refs.eventsPageRef.openModal("cameraObstruction", null); });
+    connection.on("NotifyPowerLoss", msg => { this.$refs.eventsPageRef.openModal("powerLoss", null); });
+    connection.on("NotifyGPSMovement", msg => { this.$refs.eventsPageRef.openModal("gpsMovement", null); });
+    connection.on("NotifyTruck", img => { this.$refs.eventsPageRef.openModal("notifyTruck", img); });
+    connection.on("NotifyPerson", img => { this.$refs.eventsPageRef.openModal("notifyPerson", img); });
+    connection.on("ReceiveImage", img => { this.$refs.eventsPageRef.openModal("receiveImage", img); });
+    connection.on("ReceiveInfos", (param1, param2, param3) => { this.$refs.eventsPageRef.openModal("receiveInfos", {gps: param1, battery: param2, powerSource: param3}); });
   },
   methods: {
     setCurrentPage(page) {
@@ -75,6 +83,7 @@ export default {
 .title-header {
   display: flex;
   justify-content: center;
+  margin-bottom: 0.3em;
 }
 
 .buttons-switch {

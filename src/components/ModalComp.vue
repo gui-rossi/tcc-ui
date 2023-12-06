@@ -2,7 +2,8 @@
 /* eslint-disable */
 const props = defineProps({
   show: Boolean,
-  myValue: String
+  modalContent: String,
+  modalImage: String
 })
 </script>
 
@@ -11,20 +12,22 @@ const props = defineProps({
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <div class="modal-header">
-          <slot name="header">default header</slot>
+          <slot name="header">Alerta</slot>
         </div>
 
         <div class="modal-body">
-          <slot name="body">{{ myValue }}</slot>
+          <slot name="body">
+            <!-- <div v-if="this.modalContent"> {{ modalContent }}</div> -->
+            <div v-if="this.modalContent" v-html="this.modalContent"></div>
+            <div v-if="this.modalImage">
+              <img :src="'data:image/png;base64,' + this.modalImage" alt="Requested Image" />
+            </div>
+          </slot>
         </div>
 
         <div class="modal-footer">
           <slot name="footer">
-            default footer
-            <button
-              class="modal-default-button"
-              @click="$emit('close')"
-            >OK</button>
+            <button class="modal-default-button" @click="$emit('close')">OK</button>
           </slot>
         </div>
       </div>
