@@ -109,6 +109,7 @@ export default {
       } else if (type == 'receiveInfos') {
         this.modalTitle = 'Infos Received';
         this.modalContent = data.gps.split("|")[0] + "<br>" + data.gps.split("|")[1] + "<br>Power Source: " + data.powerSource + "<br>Battery Level: " + data.battery;
+        this.modalImage = null;
       } else if (type == 'fullMemory') {
         this.modalTitle = 'Alert!';
         this.modalContent = "Device memory is full!";
